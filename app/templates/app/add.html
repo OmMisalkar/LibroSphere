@@ -1,0 +1,179 @@
+{% extends 'app/base.html' %}
+{% block content %}
+
+<style>
+.add-book-card {
+  max-width: 700px;
+  margin: 30px auto;
+  background: #121212;
+  padding: 25px 30px;
+  border-radius: 10px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+  color: #fff;
+}
+
+.add-book-card h2 {
+  margin-bottom: 20px;
+  font-size: 1.6rem;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+  color: #ccc;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  background: #1e1e1e;
+  border: 1px solid #333;
+  border-radius: 6px;
+  color: #fff;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #4caf50;
+}
+
+.checkbox-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 15px 0;
+  background: #1a1a1a;
+  padding: 12px;
+  border-radius: 6px;
+}
+
+.checkbox-box input {
+  transform: scale(1.2);
+}
+
+.info-text {
+  font-size: 0.8rem;
+  color: #ffcc80;
+  margin-top: 5px;
+}
+
+.btn-save {
+  width: 100%;
+  padding: 12px;
+  background: #000;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.btn-save:hover {
+  background: #333;
+}
+.genre-box {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  background: #1a1a1a;
+  padding: 12px;
+  border-radius: 6px;
+}
+
+.genre-box label {
+  font-size: 0.85rem;
+  color: #ddd;
+  cursor: pointer;
+}
+
+.genre-box input {
+  margin-right: 6px;
+  transform: scale(1.1);
+}
+
+
+</style>
+
+<div class="add-book-card">
+
+  <h2>➕ Add Second-Hand Book</h2>
+
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="form-group">
+      <label>Title</label>
+      <input type="text" name="title" required>
+    </div>
+
+    <div class="form-group">
+      <label>Author</label>
+      <input type="text" name="author" required>
+    </div>
+
+    <div class="form-group">
+      <label>Description</label>
+      <textarea name="description" required></textarea>
+    </div>
+
+<div class="form-group">
+  <label>Genres</label>
+  <div class="genre-box">
+    {% for genre in genres %}
+      <label>
+        <input type="checkbox" name="genres" value="{{ genre.id }}">
+        {{ genre.name }}
+      </label>
+    {% empty %}
+      <span style="color:#ff8080;">No genres available</span>
+    {% endfor %}
+  </div>
+</div>
+
+
+    <div class="form-group">
+      <label>Price (₹)</label>
+      <input type="number" name="price" required>
+    </div>
+
+    <div class="form-group">
+      <label>Image</label>
+      <input type="file" name="image">
+    </div>
+
+    <div class="form-group">
+      <label>Quantity</label>
+      <input type="number" name="quantity" value="1" min="1">
+    </div>
+
+    <!-- FORCE SECOND HAND -->
+    <div class="checkbox-box">
+      <input type="checkbox" name="is_second_hand" checked disabled>
+      <strong>Second-Hand Book (Borrow Allowed)</strong>
+    </div>
+
+    <input type="hidden" name="is_second_hand" value="on">
+
+    <p class="info-text">
+      ⚠ Only second-hand books can be added. Borrow option will be enabled automatically.
+    </p>
+
+    <button type="submit" class="btn-save">Save Book</button>
+
+  </form>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,148 @@
+{% extends 'app/base.html' %}
+
+{% block content %}
+
+<style>
+/* FAVORITES PAGE ONLY CSS */
+.fav-container {
+  max-width: 1200px;
+  margin: 30px auto;
+}
+
+.fav-title {
+  font-size: 26px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.fav-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.fav-card {
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.fav-card img {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  background: #f0f0f0;
+}
+
+.fav-body {
+  padding: 14px;
+}
+
+.fav-body h3 {
+  margin: 0 0 6px;
+  font-size: 1.05rem;
+}
+
+.fav-body p {
+  margin: 0;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.fav-price {
+  font-weight: bold;
+  margin-top: 8px;
+}
+
+.fav-actions {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid #eee;
+  background: #fafafa;
+}
+
+.fav-actions a {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  text-align: center;
+  text-decoration: none;
+}
+
+.btn-cart {
+  background: #000;
+  color: #fff;
+}
+
+.btn-cart:hover {
+  background: #333;
+}
+
+.btn-remove {
+  background: #fff;
+  border: 1px solid #ddd;
+  color: #111;
+}
+
+.btn-remove:hover {
+  background: #f3f3f3;
+}
+
+.empty-msg {
+  font-size: 16px;
+  color: #666;
+}
+</style>
+
+<div class="fav-container">
+
+  <div class="fav-title">My Favorites ❤️</div>
+
+  {% if favorites %}
+    <div class="fav-grid">
+      {% for fav in favorites %}
+        <div class="fav-card">
+
+          {% if fav.book.image %}
+            <img src="{{ fav.book.image.url }}" alt="{{ fav.book.title }}">
+          {% else %}
+            <img src="/static/default.jpg" alt="No Image">
+          {% endif %}
+
+          <div class="fav-body">
+            <h3>{{ fav.book.title }}</h3>
+            <p>{{ fav.book.author }}</p>
+            <div class="fav-price">₹ {{ fav.book.price }}</div>
+          </div>
+
+          <div class="fav-actions">
+
+            <form action="{% url 'add_to_cart' fav.book.id %}" method="post">
+              {% csrf_token %}
+              <button type="submit" class="btn-cart">
+                Add to Cart
+              </button>
+            </form>
+
+            <a href="{% url 'remove_favorite' fav.book.id %}" class="btn-remove">
+              Remove
+            </a>
+
+          </div>
+
+
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="empty-msg">No favorite books yet.</p>
+  {% endif %}
+
+</div>
+
+{% endblock %}

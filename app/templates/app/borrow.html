@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Borrow Book</title>
+  <style>
+    .borrow-container {
+      max-width: 700px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px;
+      width: 100%;
+      background: #000;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="borrow-container">
+    <h2>Borrow Book</h2>
+
+    <div>
+      <strong>{{ book.title }}</strong><br>
+      {{ book.author }}
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+
+      <label>Quantity</label>
+      <input type="number" name="quantity" min="1" value="1" required>
+
+      <label>Days Required</label>
+      <input type="number" name="days_required" min="1" required>
+
+      <button type="submit">Submit Borrow Request</button>
+    </form>
+  </div>
+</body>
+</html>

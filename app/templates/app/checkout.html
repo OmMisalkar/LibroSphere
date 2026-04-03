@@ -1,0 +1,180 @@
+{% extends "app/base.html" %}
+{% block content %}
+
+<style>
+.checkout-box {
+  max-width: 800px;
+  margin: 40px auto;
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+}
+
+.checkout-box h2 {
+  margin-bottom: 20px;
+}
+
+.invoice-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.total-row {
+  font-size: 18px;
+  font-weight: bold;
+  border-top: 1px solid #ddd;
+  padding-top: 15px;
+  margin-top: 15px;
+}
+
+.address-box textarea {
+  width: 100%;
+  height: 100px;
+  margin-top: 10px;
+  padding: 10px;
+}
+
+.order-btn {
+  margin-top: 20px;
+  width: 100%;
+  background: #28a745;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.addr-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.addr-grid .full {
+  grid-column: span 2;
+}
+
+.addr-grid label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.addr-grid input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-top: 4px;
+}
+
+.order-btn {
+  margin-top: 25px;
+  width: 100%;
+  background: #f0c14b;
+  border: 1px solid #a88734;
+  color: #111;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.order-btn:hover {
+  background: #ddb347;
+}
+
+@media (max-width: 768px) {
+  .addr-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+</style>
+
+<div class="checkout-box">
+  <h2>🧾 Order Summary</h2>
+
+  {% for it in items %}
+    <div class="invoice-item">
+      <span>{{ it.book.title }} × {{ it.quantity }}</span>
+      <span>₹ {{ it.subtotal }}</span>
+    </div>
+  {% endfor %}
+
+  <div class="invoice-item total-row">
+    <span>Total</span>
+    <span>₹ {{ total }}</span>
+  </div>
+
+  <form method="post">
+    {% csrf_token %}
+<form method="post">
+  {% csrf_token %}
+
+  <h3>📍 Delivery Address</h3>
+
+  <div class="addr-grid">
+
+    <div>
+      <label>Full Name</label>
+      <input type="text" name="full_name" required>
+    </div>
+
+    <div>
+      <label>Phone Number</label>
+      <input type="text" name="phone" required>
+    </div>
+
+    <div class="full">
+      <label>Address Line 1</label>
+      <input type="text" name="address1" placeholder="House no, Street name" required>
+    </div>
+
+    <div class="full">
+      <label>Address Line 2 (Optional)</label>
+      <input type="text" name="address2" placeholder="Apartment, landmark">
+    </div>
+
+    <div>
+      <label>City</label>
+      <input type="text" name="city" required>
+    </div>
+
+    <div>
+      <label>State</label>
+      <input type="text" name="state" required>
+    </div>
+
+    <div>
+      <label>Pincode</label>
+      <input type="text" name="pincode" required>
+    </div>
+
+    <div>
+      <label>Country</label>
+      <input type="text" name="country" value="India" required>
+    </div>
+
+  </div>
+</form>
+
+
+    <form method="post">
+        {% csrf_token %}
+    <!-- address fields -->
+
+        <button type="submit" class="order-btn">
+            Place Order
+        </button>
+    </form>
+
+  </form>
+</div>
+
+{% endblock %}

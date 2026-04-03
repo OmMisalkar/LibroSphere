@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Advanced Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            background: #0f172a;
+            color: white;
+            font-family: Arial;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .buttons {
+            text-align: center;
+            margin: 20px;
+        }
+
+        button {
+            background: #38bdf8;
+            padding: 10px;
+            margin: 5px;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0ea5e9;
+        }
+
+        .chart-box {
+            display: none;
+            width: 90%;
+            max-width: 800px;
+            margin: 20px auto;
+        }
+
+        canvas {
+            height: 400px !important;
+        }
+
+        .container {
+            display: block;
+            margin-top: 30px;
+        }
+
+        .card {
+            background: #1e293b;
+            padding: 20px;
+            margin: 20px auto;
+            width: 80%;
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            border-bottom: 1px solid #38bdf8;
+        }
+
+        tr:hover {
+            background: #334155;
+        }
+    </style>
+</head>
+<body>
+
+<h1>📊 Advanced Analytics Dashboard</h1>
+
+<!-- 🔘 BUTTONS -->
+<div class="buttons">
+    <button onclick="show('c1')">📊 Sold vs Borrowed</button>
+    <button onclick="show('c2')">📅 Purchase Trend</button>
+    <button onclick="show('c3')">📅 Borrow Trend</button>
+    <button onclick="show('c4')">📚 Sales per Book</button>
+    <button onclick="show('c5')">🏆 Ranking</button>
+</div>
+
+<!-- CHARTS -->
+<div id="c1" class="chart-box"><canvas id="chart1"></canvas></div>
+<div id="c2" class="chart-box"><canvas id="chart2"></canvas></div>
+<div id="c3" class="chart-box"><canvas id="chart3"></canvas></div>
+<div id="c4" class="chart-box"><canvas id="chart4"></canvas></div>
+<div id="c5" class="chart-box"><canvas id="chart5"></canvas></div>
+
+<script>
+function show(id) {
+
+    document.querySelectorAll('.chart-box').forEach(c => c.style.display = 'none');
+    document.getElementById(id).style.display = 'block';
+
+    setTimeout(() => {
+
+        if (!window.loaded) {
+
+            new Chart(chart1, {
+                type: "bar",
+                data: {
+                    labels: ["Sold", "Borrowed"],
+                    datasets: [{
+                        data: [{{ total_sold }}, {{ total_borrowed }}],
+                        backgroundColor: ["#38bdf8", "#22c55e"]
+                    }]
+                }
+            });
+
+            new Chart(chart2, {
+                type: "line",
+                data: {
+                    labels: {{ purchase_labels|safe }},
+                    datasets: [{
+                        data: {{ purchase_values|safe }},
+                        borderColor: "#38bdf8",
+                        fill: false
+                    }]
+                }
+            });
+
+            new Chart(chart3, {
+                type: "line",
+                data: {
+                    labels: {{ borrow_labels|safe }},
+                    datasets: [{
+                        data: {{ borrow_values|safe }},
+                        borderColor: "#22c55e",
+                        fill: false
+                    }]
+                }
+            });
+
+            new Chart(chart4, {
+                type: "bar",
+                data: {
+                    labels: {{ book_labels|safe }},
+                    datasets: [{
+                        data: {{ book_values|safe }},
+                        backgroundColor: "#38bdf8"
+                    }]
+                }
+            });
+
+            new Chart(chart5, {
+                type: "line",
+                data: {
+                    labels: {{ book_labels|safe }},
+                    datasets: [{
+                        data: {{ book_values|safe }},
+                        borderColor: "#facc15",
+                        fill: false
+                    }]
+                }
+            });
+
+            window.loaded = true;
+        }
+
+    }, 200);
+}
+</script>
+
+<!-- 📚 TABLES -->
+<div class="container">
+
+    <!-- 🛒 PURCHASE -->
+    <div class="card">
+        <h2>🛒 Purchase Details</h2>
+        <table>
+            <tr>
+                <th>User</th>
+                <th>Book</th>
+                <th>Qty</th>
+                <th>Date</th>
+            </tr>
+            {% for item in sold_records %}
+            <tr>
+                <td>{{ item.order.user.username }}</td>
+                <td>{{ item.book.title }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.order.created_at|date:"d M Y" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">No purchase data</td></tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <!-- 👤 BUYERS -->
+    <div class="card">
+        <h2>👤 Buyers</h2>
+        <table>
+            <tr>
+                <th>User</th>
+                <th>Book</th>
+                <th>Qty</th>
+                <th>Date</th>
+            </tr>
+            {% for item in sold_records %}
+            <tr>
+                <td>{{ item.order.user.username }}</td>
+                <td>{{ item.book.title }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.order.created_at|date:"d M Y" }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <!-- 📖 BORROW -->
+    <div class="card">
+        <h2>📖 Borrow Details</h2>
+        <table>
+            <tr>
+                <th>User</th>
+                <th>Book</th>
+                <th>Qty</th>
+                <th>Date</th>
+            </tr>
+            {% for item in borrowed_records %}
+            <tr>
+                <td>{{ item.user.username }}</td>
+                <td>{{ item.book.title }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.borrow_date|date:"d M Y" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">No borrow data</td></tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}LibroSphere{% endblock %}</title>
+  {% load static %}
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      color: #222;
+    }
+
+    header {
+      background-color: #000;
+      color: #fff;
+      padding: 15px 30px;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+   .icon-navbar {
+  background: #2b2b2b;
+  padding: 8px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* LOGO */
+.nav-logo {
+  height: 40px;
+}
+
+/* RIGHT ICON BAR */
+.nav-right {
+  display: flex;
+  gap: 22px;
+  align-items: center;
+}
+
+/* EACH ICON */
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: #fff;
+  font-size: 11px;
+  opacity: 0.85;
+}
+
+.nav-item img {
+  width: 24px;
+  height: 24px;
+  margin-bottom: 3px;
+}
+
+/* HOVER EFFECT */
+.nav-item:hover {
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+
+    .container {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .messages {
+      margin-bottom: 15px;
+    }
+
+    .msg {
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .msg.success {
+      background-color: #d4edda;
+      color: #155724;
+    }
+
+    .msg.error {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+
+    footer {
+      margin-top: 40px;
+      padding: 15px;
+      text-align: center;
+      background: #eee;
+      font-size: 13px;
+      color: #555;
+    }
+
+    /* SEARCH BAR STYLING */
+.search-wrapper {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0 30px;
+}
+
+.search-form {
+  display: flex;
+  width: 100%;
+  max-width: 520px;
+  background: #fff;
+  border-radius: 30px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+.search-form input[type="text"] {
+  flex: 1;
+  border: none;
+  padding: 14px 18px;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.search-form input::placeholder {
+  color: #888;
+}
+
+.search-form button {
+  background: #000;
+  color: #fff;
+  border: none;
+  padding: 0 22px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.search-form button:hover {
+  background: #333;
+}
+
+/* BOOK GRID – 3 PER ROW */
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .book-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 576px) {
+  .book-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.book-card img {
+  width: 100%;
+  height: 200px;         
+  object-fit: contain; 
+  background: #f5f5f5;
+  padding: 10px;
+}
+
+
+/* BOOK CARD */
+.book-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.card-body {
+  padding: 14px 16px;
+  flex-grow: 1;
+}
+
+.card-body h3 {
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+.card-body .meta {
+  font-size: 0.88rem;
+  color: #666;
+}
+
+.card-body .price {
+  margin-top: 8px;
+  font-weight: bold;
+}
+
+.card-actions {
+  display: flex;
+  gap: 10px;
+  padding: 12px;
+  border-top: 1px solid #eee;
+}
+
+
+/* BUTTONS */
+.btn-primary {
+  background: #000;
+  color: #fff;
+  border-radius: 20px;
+}
+
+.btn-secondary {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+}
+
+
+.add-form {
+  max-width: 600px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.add-form label {
+  display: block;
+  margin-top: 10px;
+  font-weight: 600;
+}
+
+.add-form input,
+.add-form textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.search-sort-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.search-form {
+  display: flex;
+  gap: 10px;
+}
+
+.search-form select {
+  padding: 10px;
+  border-radius: 25px;
+  border: 1px solid #ccc;
+}
+
+
+
+.top-bar {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.left-space {
+
+}
+
+/* CENTER SEARCH */
+.search-form-center {
+  display: flex;
+  justify-content: center;
+}
+
+.search-form-center input {
+  width: 60%;
+  padding: 12px 18px;
+  border-radius: 30px 0 0 30px;
+  border: 1px solid #ccc;
+  outline: none;
+}
+
+.search-form-center button {
+  padding: 12px 20px;
+  border-radius: 0 30px 30px 0;
+  border: none;
+  background: #000;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* RIGHT SORT */
+.sort-form-right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.sort-form-right select {
+  padding: 10px 15px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+/* MOBILE RESPONSIVE */
+@media (max-width: 768px) {
+  .top-bar {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .search-form-center input {
+    width: 100%;
+  }
+
+  .sort-form-right {
+    justify-content: center;
+  }
+}
+
+.rating-box {
+  margin-top: 6px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stars {
+  color: #f5b301;
+  font-size: 15px;
+}
+
+.rating-text {
+  color: #555;
+  font-size: 13px;
+}
+
+.no-rating {
+  color: #999;
+  font-size: 13px;
+}
+
+
+
+
+  </style>
+</head>
+
+<body>
+
+<header>
+  LibroSphere
+</header>
+
+<nav class="icon-navbar">
+
+  <!-- LEFT : LOGO -->
+  <div class="nav-left">
+    <img src="/media/logo.jpg" alt="LibroSphere" class="nav-logo">
+  </div>
+
+  <!-- RIGHT : ICON MENU -->
+  <div class="nav-right">
+
+    <a href="{% url 'profile' %}" class="nav-item">
+      <img src="/media/icons/profile.png">
+      <span>Profile</span>
+    </a>
+
+    <a href="{% url 'home' %}" class="nav-item">
+      <img src="/media/icons/home.png">
+      <span>Home</span>
+    </a>
+
+    <a href="{% url 'add' %}" class="nav-item">
+      <img src="/media/icons/add.png">
+      <span>Add</span>
+    </a>
+
+     <a href="{% url 'favorites' %}" class="nav-item">
+      <img src="/media/icons/favorite.png" alt="Favorites">
+      <span>Favorite</span>
+    </a>
+
+    <a href="{% url 'my_borrows' %}" class="nav-item">
+      <img src="/media/icons/myborrow.png">
+      <span>My Borrows</span>
+    </a>
+
+    <a href="{% url 'cart' %}" class="nav-item">
+      <img src="/media/icons/cart.png">
+      <span>Cart</span>
+    </a>
+
+    <a href="{% url 'logout' %}" class="nav-item">
+      <img src="/media/icons/logout.png">
+      <span>Logout</span>
+    </a>
+
+  </div>
+</nav>
+
+
+<div class="container">
+
+  <div class="messages">
+    {% if messages %}
+      {% for m in messages %}
+        <div class="msg {{ m.tags }}">{{ m }}</div>
+      {% endfor %}
+    {% endif %}
+  </div>
+
+  {% block content %}
+  {% endblock %}
+
+</div>
+
+<footer>
+  © LibroSphere
+</footer>
+
+</body>
+</html>

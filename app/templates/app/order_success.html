@@ -1,0 +1,44 @@
+{% extends "app/base.html" %}
+{% block content %}
+
+<style>
+.success-box {
+  text-align: center;
+  margin-top: 80px;
+}
+
+.success-box h1 {
+  color: #28a745;
+  font-size: 32px;
+}
+
+.fireworks {
+  font-size: 60px;
+  margin: 20px 0;
+  animation: pop 1s infinite alternate;
+}
+
+@keyframes pop {
+  from { transform: scale(1); }
+  to { transform: scale(1.2); }
+}
+
+.back-btn {
+  margin-top: 20px;
+  padding: 10px 25px;
+  background: #000;
+  color: #fff;
+  border-radius: 6px;
+  text-decoration: none;
+}
+</style>
+
+<div class="success-box">
+  <div class="fireworks">🎆 🎉 🎆</div>
+  <h1>Order Placed Successfully!</h1>
+  <p>Thank you for your order 📦</p>
+
+  <a href="{% url 'home' %}" class="back-btn">Go to Home</a>
+</div>
+
+{% endblock %}

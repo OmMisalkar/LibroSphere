@@ -1,0 +1,88 @@
+{% extends 'app/base.html' %}
+{% block content %}
+
+<style>
+.borrow-box {
+  max-width: 1000px;
+  margin: 30px auto;
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+}
+
+.borrow-card {
+  border-bottom: 1px solid #eee;
+  padding: 15px 0;
+}
+
+.status-approved { color: green; font-weight: 600; }
+.status-pending { color: orange; }
+.status-rejected { color: red; }
+
+.warning { color: #e53935; font-weight: bold; }
+.safe { color: green; }
+
+.extend-form input {
+  width: 90px;
+  padding: 6px;
+}
+.extend-form button {
+  padding: 6px 12px;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+}
+</style>
+
+<div class="borrow-box">
+  <h2>📚 My Borrow Requests</h2>
+
+  {% for r in borrow_requests %}
+  <div class="borrow-card">
+
+    <p><strong>Book:</strong> {{ r.book.title }}</p>
+    <p><strong>Qty:</strong> {{ r.quantity }}</p>
+    <p><strong>Status:</strong>
+      {% if r.status == "approved" %}
+        <span class="status-approved">Approved</span>
+      {% elif r.status == "pending" %}
+        <span class="status-pending">Pending</span>
+      {% else %}
+        <span class="status-rejected">Rejected</span>
+      {% endif %}
+    </p>
+
+    {% if r.is_paid %}
+      <p><strong>Return Date:</strong> {{ r.return_date }}</p>
+
+      {% if r.days_left >= 0 %}
+        <p class="safe">⏳ {{ r.days_left }} days remaining</p>
+      {% else %}
+        <p class="warning">
+          ⚠ Overdue by {{ r.overdue_days }} days<br>
+          Fine: ₹ {{ r.extra_fine }}
+        </p>
+      {% endif %}
+
+      <!-- ENABLE EXTEND ONLY AFTER PAYMENT -->
+      <form method="post" action="{% url 'extend_borrow' r.id %}" class="extend-form">
+        {% csrf_token %}
+        <input type="number" name="extra_days" min="1" placeholder="Days" required>
+        <button type="submit">Extend</button>
+      </form>
+
+    {% elif r.status == "approved" %}
+      <a href="{% url 'borrow_checkout' r.id %}">
+        Proceed to Checkout
+      </a>
+    {% endif %}
+
+  </div>
+  {% empty %}
+    <p>No borrow requests yet.</p>
+  {% endfor %}
+</div>
+
+{% endblock %}

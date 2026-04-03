@@ -1,0 +1,166 @@
+{% extends 'app/base.html' %} 
+{% load static %}
+
+{% block content %}
+
+<style>
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.comparison-btn {
+  background: #38bdf8;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.comparison-btn:hover {
+  background: #0ea5e9;
+  transform: scale(1.05);
+}
+</style>
+
+<div class="container">
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+
+    <!-- LEFT: COMPARISON BUTTON -->
+    <div>
+      <a href="{% url 'comparison' %}" class="comparison-btn">
+        📊 Comparison
+      </a>
+    </div>
+
+    <!-- CENTER SEARCH -->
+    <form method="get" class="search-form-center">
+      <input
+        type="text"
+        name="search"
+        placeholder="🔍 Search books by title or author..."
+        value="{{ request.GET.search }}"
+      >
+      <button type="submit">Search</button>
+    </form>
+
+    <!-- RIGHT SORT -->
+    <form method="get">
+      <input type="hidden" name="search" value="{{ request.GET.search }}">
+
+      <select name="sort" onchange="this.form.submit()">
+        <option value="">Sort by: Featured</option>
+
+        <option value="price_low" {% if request.GET.sort == "price_low" %}selected{% endif %}>
+          Price: Low to High
+        </option>
+
+        <option value="price_high" {% if request.GET.sort == "price_high" %}selected{% endif %}>
+          Price: High to Low
+        </option>
+
+        <option value="borrow" {% if request.GET.sort == "borrow" %}selected{% endif %}>
+          Available for Borrow
+        </option>
+
+        <option value="best" {% if request.GET.sort == "best" %}selected{% endif %}>
+          Best Sellers
+        </option>
+      </select>
+    </form>
+
+  </div>
+
+  <h2>Book List</h2>
+
+  <div class="book-grid">
+
+    {% if books %}
+      {% for book in books %}
+        <div class="book-card">
+
+          <!-- IMAGE -->
+          <a href="{% url 'book_detail' book.id %}">
+            {% if book.image %}
+              <img src="{{ book.image.url }}" alt="{{ book.title }}">
+            {% else %}
+              <img src="{% static 'default.jpg' %}" alt="No Image">
+            {% endif %}
+          </a>
+
+          <div class="card-body">
+
+            <!-- TITLE -->
+            <a href="{% url 'book_detail' book.id %}" style="text-decoration:none;color:inherit;">
+              <h3>{{ book.title }}</h3>
+            </a>
+
+            <div class="meta">{{ book.author }}</div>
+            <div class="meta">{{ book.genre }}</div>
+            <div class="price">₹ {{ book.price }}</div>
+
+            <!-- RATING -->
+            <div class="rating-box">
+              {% if book.review_count > 0 %}
+                <span class="stars">
+                  {% for i in "12345" %}
+                    {% if book.avg_rating|floatformat:1 >= i %}
+                      ★
+                    {% else %}
+                      ☆
+                    {% endif %}
+                  {% endfor %}
+                </span>
+                <span class="rating-text">
+                  {{ book.avg_rating|floatformat:1 }} ({{ book.review_count }} review)
+                </span>
+              {% else %}
+                <span class="no-rating">No ratings yet</span>
+              {% endif %}
+            </div>
+
+          </div>
+
+          <div class="card-actions">
+
+            <!-- ADD TO CART -->
+            <form method="post" action="{% url 'add_to_cart' book.id %}">
+              {% csrf_token %}
+              <button type="submit" class="btn-primary">
+                Add to Cart
+              </button>
+            </form>
+
+            <!-- FAVORITE -->
+            <form method="post" action="{% url 'toggle_favorite' book.id %}">
+              {% csrf_token %}
+              <button type="submit" class="btn-secondary">
+                ❤️ Favorite
+              </button>
+            </form>
+
+            <!-- BORROW -->
+            {% if book.is_second_hand %}
+              <a href="{% url 'borrow_book' book.id %}" class="btn-secondary">
+                Borrow
+              </a>
+            {% endif %}
+
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p>No books available.</p>
+    {% endif %}
+
+  </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,202 @@
+{% extends 'app/base.html' %}
+{% block content %}
+
+<style>
+/* ===== BORROW CHECKOUT UI ===== */
+
+.borrow-checkout {
+  max-width: 800px;
+  margin: 40px auto;
+  background: #fff;
+  padding: 30px;
+  border-radius: 14px;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.1);
+}
+
+.borrow-checkout h2 {
+  margin-bottom: 20px;
+}
+
+.summary-box {
+  background: #f9fafb;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 25px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+
+.summary-row strong {
+  font-weight: 600;
+}
+
+/* ===== ADDRESS FORM ===== */
+
+.addr-title {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.addr-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.addr-grid .full {
+  grid-column: span 2;
+}
+
+.addr-grid label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.addr-grid input,
+.addr-grid textarea,
+.addr-grid select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 4px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* ===== WARNING ===== */
+
+.warning-box {
+  margin-top: 20px;
+  padding: 14px;
+  background: #fff3cd;
+  border-left: 5px solid #ff9800;
+  color: #856404;
+  font-size: 14px;
+  border-radius: 6px;
+}
+
+/* ===== BUTTON ===== */
+
+.confirm-btn {
+  margin-top: 25px;
+  width: 100%;
+  padding: 13px;
+  background: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.confirm-btn:hover {
+  background: #218838;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 768px) {
+  .addr-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+<div class="borrow-checkout">
+
+  <h2>📦 Borrow Checkout</h2>
+
+  <!-- BORROW SUMMARY -->
+  <div class="summary-box">
+    <div class="summary-row">
+      <span><strong>Book</strong></span>
+      <span>{{ borrow.book.title }}</span>
+    </div>
+    <div class="summary-row">
+      <span>Quantity</span>
+      <span>{{ borrow.quantity }}</span>
+    </div>
+    <div class="summary-row">
+      <span>Borrow Days</span>
+      <span>{{ borrow.days_required }}</span>
+    </div>
+    <div class="summary-row">
+      <span>Extra Fine</span>
+      <span>₹ {{ borrow.extra_fine }}</span>
+    </div>
+  </div>
+
+  <form method="post">
+    {% csrf_token %}
+
+    <!-- ADDRESS -->
+    <div class="addr-title">📍 Delivery Address</div>
+
+    <div class="addr-grid">
+      <div>
+        <label>Full Name</label>
+        <input type="text" name="full_name" required>
+      </div>
+
+      <div>
+        <label>Phone Number</label>
+        <input type="text" name="phone" required>
+      </div>
+
+      <div class="full">
+        <label>Address Line 1</label>
+        <input type="text" name="address1" placeholder="House no, Street" required>
+      </div>
+
+      <div class="full">
+        <label>Address Line 2 (Optional)</label>
+        <input type="text" name="address2" placeholder="Apartment, Landmark">
+      </div>
+
+      <div>
+        <label>City</label>
+        <input type="text" name="city" required>
+      </div>
+
+      <div>
+        <label>State</label>
+        <input type="text" name="state" required>
+      </div>
+
+      <div>
+        <label>Pincode</label>
+        <input type="text" name="pincode" required>
+      </div>
+
+      <div>
+        <label>Country</label>
+        <input type="text" name="country" value="India" required>
+      </div>
+
+      <div class="full">
+        <label>Payment Method</label>
+        <select name="payment_method">
+          <option value="cod">Cash on Delivery</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- WARNING -->
+    <div class="warning-box">
+      ⚠ <strong>Important Notice:</strong><br>
+      If the book is not returned within the selected duration,
+      a fine of <strong>₹10 per extra day</strong> will be charged.
+    </div>
+
+    <button type="submit" class="confirm-btn">
+      Confirm Borrow
+    </button>
+  </form>
+
+</div>
+
+{% endblock %}

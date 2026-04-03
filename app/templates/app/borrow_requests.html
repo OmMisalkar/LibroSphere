@@ -1,0 +1,21 @@
+<h2>Borrow Requests</h2>
+
+<table border="1" cellpadding="8">
+  <tr>
+    <th>User</th>
+    <th>Book</th>
+    <th>Quantity</th>
+    <th>Days</th>
+    <th>Status</th>
+  </tr>
+
+  {% for r in requests %}
+  <tr>
+    <td>{{ r.user.username }}</td>
+    <td>{{ r.book.title }}</td>
+    <td>{{ r.quantity }}</td>
+    <td>{{ r.days_required }}</td>
+    <td>{{ r.status }}</td>
+  </tr>
+  {% endfor %}
+</table>

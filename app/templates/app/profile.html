@@ -1,0 +1,179 @@
+{% extends 'app/base.html' %}
+{% block content %}
+
+<style>
+/* ===== PROFILE PAGE ===== */
+
+.profile-wrapper {
+  max-width: 650px;
+  margin: 50px auto;
+  background: #ffffff;
+  padding: 35px;
+  border-radius: 14px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.profile-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.profile-avatar {
+  width: 90px;
+  height: 90px;
+  margin: 0 auto 15px;
+  border-radius: 50%;
+  background: #000;
+  color: #fff;
+  font-size: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-header h2 {
+  margin: 0;
+}
+
+.profile-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.profile-form .full {
+  grid-column: span 2;
+}
+
+.profile-form label {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.profile-form input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.profile-form input:focus {
+  outline: none;
+  border-color: #000;
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.1);
+}
+
+.update-btn {
+  margin-top: 30px;
+  width: 100%;
+  padding: 14px;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.update-btn:hover {
+  background: #222;
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+  .profile-form {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+<div class="profile-wrapper">
+
+  <!-- HEADER -->
+  <div class="profile-header">
+    <div class="profile-avatar">
+      {{ user.username|first|upper }}
+    </div>
+    <h2>Edit Profile</h2>
+    <p style="color:#666;">Update your account information</p>
+  </div>
+
+  <!-- FORM -->
+  <form method="post">
+    {% csrf_token %}
+
+    <div class="profile-form">
+
+      <div class="full">
+        <label>Username</label>
+        <input type="text" name="username" value="{{ user.username }}" required>
+      </div>
+
+      <div class="full">
+        <label>Email</label>
+        <input type="email" name="email" value="{{ user.email }}" required>
+      </div>
+
+      <div>
+        <label>First Name</label>
+        <input type="text" name="first_name" value="{{ user.first_name }}">
+      </div>
+
+      <div>
+        <label>Last Name</label>
+        <input type="text" name="last_name" value="{{ user.last_name }}">
+      </div>
+
+    </div>
+
+    <button type="submit" class="update-btn">
+      Update Profile
+    </button>
+  </form>
+
+  <hr>
+
+<h3>🛒 Purchased Books ({{ purchased_count }})</h3>
+
+{% if purchased_items %}
+  <ul>
+    {% for item in purchased_items %}
+      <li>
+        <strong>{{ item.book.title }}</strong>
+        — Qty: {{ item.quantity }}
+        — ₹{{ item.price }}
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No purchases yet.</p>
+{% endif %}
+
+
+
+
+<hr>
+
+<h3>📚 Borrowed Books ({{ borrowed_count }})</h3>
+
+{% if borrowed_items %}
+  <ul>
+    {% for b in borrowed_items %}
+      <li>
+        <strong>{{ b.book.title }}</strong>
+        — Return by {{ b.return_date }}
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No borrowed books yet.</p>
+{% endif %}
+
+
+
+</div>
+
+{% endblock %}
